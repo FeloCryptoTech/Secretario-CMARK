@@ -1,17 +1,18 @@
 import telebot
-import os  # ESTO ES NUEVO
+import os
 from flask import Flask
 from threading import Thread
 import time
 
+# --- SERVIDOR PARA MANTENERLO VIVO EN RENDER ---
 app = Flask('')
 @app.route('/')
-def home(): return "Bunker C-MARK Activo"
+def home(): return "Bunker C-MARK Activo y Patrullando"
 
 def run(): app.run(host='0.0.0.0', port=10000)
 
-# --- AQUÍ ESTÁ EL TRUCO DE SEGURIDAD ---
-# Ya no ponemos el número del token aquí, lo lee de Render
+# --- CONEXIÓN SEGURA DE DAINIER ---
+# Asegúrate de haber puesto el nuevo TOKEN en 'Environment Variables' de Render
 TOKEN = os.environ.get('BOT_TOKEN') 
 bot = telebot.TeleBot(TOKEN, threaded=False)
 
@@ -19,17 +20,30 @@ bot = telebot.TeleBot(TOKEN, threaded=False)
 def responder(message):
     try:
         t = message.text.lower().strip()
-        # (Aquí van tus reglas de "precio", "ayuda", etc., iguales que antes)
-        if any(p in t for p in ["precio", "cuanto", "mlc", "usd"]):
-            bot.reply_to(message, "¡Oye asere! 💎 Oficina aquí: https://t.me/soporteglobal")
-        elif any(p in t for p in ["ayuda", "error", "p2p", "luzia"]):
-            bot.reply_to(message, "¡Tranquilo! 🎓 Escribe a @luzia o ven a mi oficina: @SoporteGlobal_bot")
+        
+        # REGLA 1: NEGOCIOS Y PRECIOS (Dirección: @soporteglobal)
+        if any(p in t for p in ["precio", "cuanto", "valor", "mlc", "usd", "usdt", "cup", "compro", "vendo"]):
+            bot.reply_to(message, "¡Oye asere! 💎 Si quieres saber el precio o cuadrar un negocio, camina para la oficina: https://t.me/soporteglobal")
+
+        # REGLA 2: AYUDA / ERRORES / P2P (Dirección: @SoporteGlobal_bot)
+        elif any(p in t for p in ["ayuda", "error", "p2p", "no sale", "luzia", "dainier", "transfer", "codigo", "sms"]):
+            bot.reply_to(message, "¡Tranquilo! 🎓 Si tienes líos con el P2P o una transferencia, escribe a @luzia. Si ella no lo resuelve, yo mismo (Dainier) te atiendo en mi nueva oficina: @SoporteGlobal_bot. ¡Dale suave que todo tiene solución!")
+
+        # REGLA 3: MODALES EN EL BÚNKER
+        elif any(p in t for p in ["coño", "pinga", "carajo", "mierda", "pendejo"]):
+            bot.reply_to(message, "Amigo, relaja. Entendemos el estrés, pero respeta el búnker. Habla con @luzia para ayudarte, o ven a mi oficina: @SoporteGlobal_bot. ¡Aquí resolvemos!")
+
     except Exception as e:
-        print(f"Error: {e}")
+        print(f"Error detectado por Dainier: {e}")
 
 if __name__ == "__main__":
     t = Thread(target=run)
     t.start()
+    
+    # LIMPIEZA TOTAL PARA EVITAR EL ERROR 409
+    print("Dainier limpiando la zona...")
     bot.remove_webhook()
-    time.sleep(1)
+    time.sleep(2)
+    
+    print("Secretario-CMARK en línea. ¡Misión en marcha!")
     bot.infinity_polling(skip_pending=True)
