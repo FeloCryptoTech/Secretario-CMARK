@@ -2,7 +2,7 @@ import telebot
 from flask import Flask
 from threading import Thread
 
-# --- ENGAÑO PARA RENDER ---
+# --- EL ENGAÑO PARA RENDER ---
 app = Flask('')
 @app.route('/')
 def home(): return "Bunker Activo"
@@ -12,25 +12,25 @@ def keep_alive():
     t = Thread(target=run)
     t.start()
 
-# --- TOKENS ---
-TOKEN_DIRECTOR = '8665833044:AAF2Zs1CG8B4fl69-nLABXwbOn3XZ4StIL0'
-bot = telebot.TeleBot(TOKEN_DIRECTOR)
+# TOKEN DEL DIRECTOR (El que está en Render)
+TOKEN = '8665833044:AAF2Zs1CG8B4fl69-nLABXwbOn3XZ4StIL0'
+bot = telebot.TeleBot(TOKEN)
 
 @bot.message_handler(func=lambda message: True)
 def responder(message):
     texto = message.text.lower()
     
-    # --- SI BUSCAN DUDAS O NEGOCIO (AL GRUPO PRIVADO) ---
-    if any(p in texto for p in ["duda", "ayuda", "luzia", "precio", "comprar", "mlc", "cuanto esta"]):
-        bot.reply_to(message, "¡Oye asere! 🎓 Para dudas o negocios, entra a nuestro **Búnker Privado**: https://t.me/+Tzo4C3jek_QxNGUx. Ahí está la Secretaria Luzia esperando para darte la luz.")
+    # --- SI BUSCAN DUDAS O NEGOCIOS (Link del Grupo Privado que SÍ abre) ---
+    if any(p in texto for p in ["duda", "ayuda", "luzia", "precio", "comprar", "mlc"]):
+        bot.reply_to(message, "¡Oye asere! 🎓 Para dudas o negocios, entra a nuestro **Búnker Privado**: https://t.me/+Tzo4C3jek_QxNGUx. Ahí está la Secretaria Luzia lista.")
 
-    # --- SI BUSCAN DENUNCIAR A MANUEL (AL BOT DE SOPORTE) ---
-    elif any(p in texto for p in ["estafa", "denuncia", "manuel", "facho", "robo", "acusacion"]):
-        bot.reply_to(message, "¡🚨 ALERTA DE FACHO! Para reportar estafas o a los emisarios de Manuel, toca aquí: @SoporteCTECH_bot. ¡No vamos a dejar que nos embarren el búnker!")
+    # --- SI BUSCAN DENUNCIAR (Link del Soporte que SÍ abre) ---
+    elif any(p in texto for p in ["estafa", "denuncia", "manuel", "facho"]):
+        bot.reply_to(message, "¡🚨 ALERTA! Reporta al facho o la estafa aquí: @SoporteGlobal_bot. ¡No dejes que Manuel te engañe!")
 
     # --- SALUDO ---
-    elif any(p in texto for p in ["hola", "que bola", "asere", "saludos"]):
-        bot.reply_to(message, "¡Qué bolá! 🛡️ Aquí el Director. Estamos activos patrullando. Si vienes a aprender o a comprar, estás en el lugar correcto.")
+    elif any(p in texto for p in ["hola", "que bola", "asere"]):
+        bot.reply_to(message, "¡Qué bolá! 🛡️ Aquí el Director. El Búnker está echando candela. ¿Qué necesitas?")
 
 if __name__ == "__main__":
     keep_alive()
